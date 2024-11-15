@@ -66,15 +66,25 @@ Input form for laborer details
 Known Issues
 Data loading might take a few seconds when displaying laborer information due to network latency.
 The app requires Firebase to function properly, and issues may arise if Firebase setup is incomplete.
-Future Improvements
+
+Future Improvements -:
+
 Push Notifications: To notify owners about new laborer registrations.
 Search Functionality: To filter laborer details based on specific criteria like name or profession.
 Enhanced UI/UX: To improve the overall look and feel, including animations and transitions.
+
 Contribution
+
 Fork the repository.
+
 Create your branch (git checkout -b feature-branch).
+
 Commit your changes (git commit -m 'Add feature').
+
 Push to the branch (git push origin feature-branch).
+
 Open a pull request.
-License
+
+License -:
+
 This project is licensed under the MIT License.
