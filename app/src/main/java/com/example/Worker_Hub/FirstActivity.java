@@ -11,7 +11,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.splashactivity.R;
+import com.example.Worker_Hub.R;
 
 public class FirstActivity extends AppCompatActivity {
     Button btn_labour,btn_owner;

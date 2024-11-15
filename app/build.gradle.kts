@@ -1,13 +1,14 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
-    namespace = "com.example.splashactivity"
+    namespace = "com.example.Worker_Hub"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.splashactivity"
+        applicationId = "com.example.Worker_Hub"
         minSdk = 21
         targetSdk = 34
         versionCode = 1
@@ -40,6 +41,8 @@ dependencies {
     implementation ("com.intuit.ssp:ssp-android:1.0.5")
     implementation ("com.intuit.sdp:sdp-android:1.0.5")
     implementation ("com.airbnb.android:lottie:5.2.0")
+    implementation(libs.firebase.database)
+    implementation(libs.recyclerview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

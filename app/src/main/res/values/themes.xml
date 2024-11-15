@@ -6,4 +6,6 @@
     </style>
 
     <style name="Theme.SplashActivity" parent="Base.Theme.SplashActivity" />
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"/>
 </resources>

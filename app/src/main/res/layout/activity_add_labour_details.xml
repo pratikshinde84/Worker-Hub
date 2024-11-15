@@ -19,19 +19,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="Logo" />
 
-    <TextView
-        android:id="@+id/registerTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Register Labour"
-        android:textSize="@dimen/_24sdp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/logo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="@dimen/_16sdp" />
-
-    <!-- Full Name EditText -->
     <EditText
         android:id="@+id/etFullName"
         android:layout_width="0dp"
@@ -39,15 +26,14 @@
         android:hint="Full Name"
         android:background="@drawable/custom_edittext"
         android:inputType="textPersonName"
-        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_12sdp"
         android:layout_marginBottom="@dimen/_8sdp"
-        app:layout_constraintTop_toBottomOf="@id/registerTitle"
+        app:layout_constraintTop_toBottomOf="@id/logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/_16sdp"
         android:layout_marginEnd="@dimen/_16sdp"/>
 
-    <!-- Mobile Number EditText -->
     <EditText
         android:id="@+id/etMobileNumber"
         android:layout_width="0dp"
@@ -63,7 +49,6 @@
         android:layout_marginStart="@dimen/_16sdp"
         android:layout_marginEnd="@dimen/_16sdp"/>
 
-    <!-- Address EditText -->
     <EditText
         android:id="@+id/etAddress"
         android:layout_width="0dp"
@@ -79,7 +64,6 @@
         android:layout_marginStart="@dimen/_16sdp"
         android:layout_marginEnd="@dimen/_16sdp"/>
 
-    <!-- Hourly Wage EditText -->
     <EditText
         android:id="@+id/etHourlyWage"
         android:layout_width="0dp"
@@ -95,7 +79,6 @@
         android:layout_marginStart="@dimen/_16sdp"
         android:layout_marginEnd="@dimen/_16sdp"/>
 
-    <!-- Date of Birth DatePicker -->
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/etDob"
         android:layout_width="0dp"
@@ -109,27 +92,45 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginStart="@dimen/_16sdp"
-        android:layout_marginEnd="@dimen/_16sdp"/>
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:onClick="showDatePicker"/>
 
-    <Button
-        android:id="@+id/btnUploadPhoto"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/etProfession"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Upload Photo"
+        android:hint="Profession"
+        android:background="@drawable/custom_edittext"
+        android:inputType="text"
         android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
         app:layout_constraintTop_toBottomOf="@id/etDob"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/_16sdp"
         android:layout_marginEnd="@dimen/_16sdp"/>
 
-    <!-- Gender RadioGroup -->
+    <EditText
+        android:id="@+id/etAboutInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="About Info"
+        android:background="@drawable/custom_edittext"
+        android:inputType="textMultiLine"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        app:layout_constraintTop_toBottomOf="@id/etProfession"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp"/>
+
     <RadioGroup
         android:id="@+id/radioGroupGender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/btnUploadPhoto"
+        app:layout_constraintTop_toBottomOf="@id/etAboutInfo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/_16sdp"
@@ -153,16 +154,17 @@
             android:text="Other"/>
     </RadioGroup>
 
-    <!-- Register Button -->
     <Button
         android:id="@+id/btnRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Register"
+        android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/radioGroupGender"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/_16sdp"
         android:layout_marginStart="@dimen/_16sdp"
-        android:layout_marginEnd="@dimen/_16sdp"/>
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:background="@drawable/button"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
