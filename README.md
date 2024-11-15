@@ -38,22 +38,24 @@ Android Studio
 Firebase Project (with Realtime Database enabled)
 Setup Firebase
 Create a Firebase project at https://console.firebase.google.com/.
+
 Add your Android app to the Firebase project.
 Add the necessary Firebase dependencies to your build.gradle file.
 Set up Firebase Realtime Database with appropriate read and write permissions.
 Running the App
+
 Clone the repository:
 
 bash
 Copy code
 git clone https://github.com/pratikshinde84/Worker-Hub.git
+
 Open the project in Android Studio.
 
 Sync the project to download the necessary dependencies.
 
 Build and run the app on an emulator or a physical device.
 
-Screenshots
 Owner Dashboard
 
 View all laborer details
