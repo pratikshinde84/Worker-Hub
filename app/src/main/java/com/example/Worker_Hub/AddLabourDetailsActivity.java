@@ -16,8 +16,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 
@@ -47,9 +50,50 @@ public class AddLabourDetailsActivity extends AppCompatActivity {
         // Initialize Firebase database reference
         databaseReference = FirebaseDatabase.getInstance().getReference("LabourDetails");
 
+        // Retrieve current user info from SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("WorkerHubPrefs", MODE_PRIVATE);
+        String username = sharedPreferences.getString("loggedInUsername", "default_user");
+
+        if (username.equals("default_user")) {
+            Toast.makeText(this, "User not logged in. Please log in to continue.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        databaseReference.child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    LabourDetails labourDetails = dataSnapshot.getValue(LabourDetails.class);
+                    if (labourDetails != null) {
+                        // Populate EditText fields with retrieved data
+                        etFullName.setText(labourDetails.getFullName());
+                        etMobileNumber.setText(labourDetails.getMobileNumber());
+                        etAddress.setText(labourDetails.getAddress());
+                        etHourlyWage.setText(labourDetails.getHourlyWage());
+                        etDob.setText(labourDetails.getDob());
+                        etProfession.setText(labourDetails.getProfession());
+                        etAboutInfo.setText(labourDetails.getAboutInfo());
+
+                        if (labourDetails.getGender().equals("Male")) {
+                            ((RadioButton) radioGroupGender.getChildAt(0)).setChecked(true); // Male
+                        } else if (labourDetails.getGender().equals("Female")) {
+                            ((RadioButton) radioGroupGender.getChildAt(1)).setChecked(true); // Female
+                        }
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(AddLabourDetailsActivity.this, "Failed to retrieve data", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         // Set up DatePicker for DOB
         etDob.setOnClickListener(v -> showDatePickerDialog());
 
+        // Register button listener
         btnRegister.setOnClickListener(v -> registerLabourDetails());
     }
 
@@ -63,7 +107,6 @@ public class AddLabourDetailsActivity extends AppCompatActivity {
         // Create and show the DatePickerDialog
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                 (view, selectedYear, selectedMonth, selectedDay) -> {
-                    // Format the selected date and set it in the EditText
                     String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
                     etDob.setText(selectedDate);
                 }, year, month, day);
@@ -71,6 +114,14 @@ public class AddLabourDetailsActivity extends AppCompatActivity {
     }
 
     private void registerLabourDetails() {
+        SharedPreferences sharedPreferences = getSharedPreferences("WorkerHubPrefs", MODE_PRIVATE);
+        String username = sharedPreferences.getString("loggedInUsername", "default_user");
+
+        if (username.equals("default_user")) {
+            Toast.makeText(this, "User not logged in. Please log in to continue.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String fullName = etFullName.getText().toString().trim();
         String mobileNumber = etMobileNumber.getText().toString().trim();
         String address = etAddress.getText().toString().trim();
@@ -83,6 +134,7 @@ public class AddLabourDetailsActivity extends AppCompatActivity {
         RadioButton selectedGenderButton = findViewById(selectedGenderId);
         String gender = selectedGenderButton != null ? selectedGenderButton.getText().toString() : "";
 
+        // Validate inputs
         if (TextUtils.isEmpty(fullName)) {
             etFullName.setError("Full name is required");
             return;
@@ -112,19 +164,17 @@ public class AddLabourDetailsActivity extends AppCompatActivity {
             return;
         }
 
-        String labourId = databaseReference.push().getKey();
-        LabourDetails labourDetails = new LabourDetails(labourId, fullName, mobileNumber, address, hourlyWage, dob, profession, aboutInfo, gender);
+        LabourDetails labourDetails = new LabourDetails(username, fullName, mobileNumber, address, hourlyWage, dob, profession, aboutInfo, gender);
 
-        if (labourId != null) {
-            databaseReference.child(labourId).setValue(labourDetails).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Toast.makeText(this, "Labour details registered successfully", Toast.LENGTH_SHORT).show();
-                    clearFields();
-                } else {
-                    Toast.makeText(this, "Failed to register labour details", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+        // Save details under the user's node
+        databaseReference.child(username).setValue(labourDetails).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(this, "Labour details updated successfully", Toast.LENGTH_SHORT).show();
+                clearFields();
+            } else {
+                Toast.makeText(this, "Failed to update labour details", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void clearFields() {

@@ -90,6 +90,7 @@ public class LabourLoginActivity extends AppCompatActivity {
 
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putBoolean("isLoggedIn", true);
+                        editor.putString("loggedInUsername", username); // Store the username
                         editor.apply();
 
                         startActivity(new Intent(LabourLoginActivity.this, AddLabourDetailsActivity.class));

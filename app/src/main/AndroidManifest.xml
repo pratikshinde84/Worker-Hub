@@ -13,13 +13,16 @@
         android:theme="@style/Theme.SplashActivity"
         tools:targetApi="31">
         <activity
+            android:name=".LabourProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".OwnerDashboardActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
             android:name=".AddLabourDetailsActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
             android:name=".OwnerRegisterActivity"
             android:exported="false" />

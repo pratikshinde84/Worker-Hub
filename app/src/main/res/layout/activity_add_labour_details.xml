@@ -125,12 +125,40 @@
         android:layout_marginStart="@dimen/_16sdp"
         android:layout_marginEnd="@dimen/_16sdp"/>
 
+    <!-- New RadioGroup for Availability -->
+    <RadioGroup
+        android:id="@+id/radioGroupAvailability"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/etAboutInfo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp">
+
+        <RadioButton
+            android:id="@+id/rbAvailable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Available"
+            android:layout_marginEnd="@dimen/_16sdp"/>
+
+        <RadioButton
+            android:id="@+id/rbNotAvailable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Not Available"/>
+    </RadioGroup>
+
+    <!-- Gender RadioGroup -->
     <RadioGroup
         android:id="@+id/radioGroupGender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/etAboutInfo"
+        app:layout_constraintTop_toBottomOf="@id/radioGroupAvailability"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/_16sdp"

@@ -12,7 +12,7 @@ public class LabourDetails {
     private String gender;
 
     public LabourDetails() {
-        // Default constructor required for Firebase
+
     }
 
     public LabourDetails(String id, String fullName, String mobileNumber, String address, String hourlyWage, String dob, String profession, String aboutInfo, String gender) {

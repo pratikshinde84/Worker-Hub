@@ -45,10 +45,9 @@ public class OwnerDashboardActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         userList = new ArrayList<>();
-        userAdapter = new UserAdapter(userList);
+        userAdapter = new UserAdapter(OwnerDashboardActivity.this,userList);
         recyclerView.setAdapter(userAdapter);
 
-        // Fetch the user data from Firebase
         fetchUserData();
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
