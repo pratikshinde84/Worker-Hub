@@ -1,12 +1,15 @@
 package com.example.Worker_Hub;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -28,7 +31,7 @@ public class AddLabourDetailsActivity extends AppCompatActivity {
 
     private EditText etFullName, etMobileNumber, etAddress, etHourlyWage, etDob, etProfession, etAboutInfo;
     private RadioGroup radioGroupGender;
-    private Button btnRegister;
+    private Button btnRegister,btnStatus;
     private DatabaseReference databaseReference;
 
     @Override
@@ -36,7 +39,6 @@ public class AddLabourDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_labour_details);
 
-        // Initialize views
         etFullName = findViewById(R.id.etFullName);
         etMobileNumber = findViewById(R.id.etMobileNumber);
         etAddress = findViewById(R.id.etAddress);
@@ -46,11 +48,10 @@ public class AddLabourDetailsActivity extends AppCompatActivity {
         etAboutInfo = findViewById(R.id.etAboutInfo);
         radioGroupGender = findViewById(R.id.radioGroupGender);
         btnRegister = findViewById(R.id.btnRegister);
+        btnStatus=findViewById(R.id.btnStatus);
 
-        // Initialize Firebase database reference
         databaseReference = FirebaseDatabase.getInstance().getReference("LabourDetails");
 
-        // Retrieve current user info from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("WorkerHubPrefs", MODE_PRIVATE);
         String username = sharedPreferences.getString("loggedInUsername", "default_user");
 
@@ -58,6 +59,59 @@ public class AddLabourDetailsActivity extends AppCompatActivity {
             Toast.makeText(this, "User not logged in. Please log in to continue.", Toast.LENGTH_SHORT).show();
             return;
         }
+        btnStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(AddLabourDetailsActivity.this);
+                builder.setTitle("Set Status");
+
+                String[] statusOptions = {"Available", "Not Available"};
+                builder.setSingleChoiceItems(statusOptions, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Get selected status
+                        String selectedStatus = statusOptions[which];
+                        boolean isAvailable = selectedStatus.equals("Available");
+
+                        // Retrieve username from SharedPreferences
+                        SharedPreferences sharedPreferences = getSharedPreferences("WorkerHubPrefs", MODE_PRIVATE);
+                        String username = sharedPreferences.getString("loggedInUsername", "default_user");
+
+                        if (username.equals("default_user")) {
+                            Toast.makeText(AddLabourDetailsActivity.this, "User not logged in. Please log in to continue.", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            return;
+                        }
+
+                        // Update isAvailable in Firebase
+                        databaseReference.child(username).child("isAvailable").setValue(isAvailable)
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(AddLabourDetailsActivity.this, "Status updated to: " + selectedStatus, Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(AddLabourDetailsActivity.this, "Failed to update status", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                        // Close the dialog
+                        dialog.dismiss();
+                    }
+                });
+
+                // Add a cancel button
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss(); // Close the dialog without any action
+                    }
+                });
+
+                // Show the dialog
+                builder.create().show();
+            }
+        });
+
+
 
         databaseReference.child(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

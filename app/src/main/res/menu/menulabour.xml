@@ -6,4 +6,5 @@
         android:icon="@drawable/logout"
         android:id="@+id/labourmenu"
         ></item>
+
 </menu>
