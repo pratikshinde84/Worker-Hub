@@ -4,11 +4,6 @@
     <item android:title="Logout"
         app:showAsAction="always"
         android:icon="@drawable/logout"
-        android:id="@+id/ownermenu"
-        ></item>
-    <item android:title="Logout"
-        app:showAsAction="always"
-        android:icon="@drawable/logout"
-        android:id="@+id/search"
-        ></item>
+        android:id="@+id/ownermenu"/>
+
 </menu>

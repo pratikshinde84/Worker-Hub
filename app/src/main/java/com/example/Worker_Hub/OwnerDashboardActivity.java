@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,7 +28,6 @@ public class OwnerDashboardActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private UserAdapter userAdapter;
     private List<LabourDetails> userList;
-    private List<LabourDetails> filteredList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,16 +36,13 @@ public class OwnerDashboardActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("WorkerHubPrefs", MODE_PRIVATE);
 
-        // Initialize RecyclerView
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        userList = new ArrayList<>();
-        filteredList = new ArrayList<>();
-        userAdapter = new UserAdapter(this, filteredList); // Use filteredList for displaying data
-        recyclerView.setAdapter(userAdapter);
+        userList = new ArrayList<>(); // Initialize userList
+        userAdapter = new UserAdapter(this, userList); // Initialize adapter
+        recyclerView.setAdapter(userAdapter); // Set the adapter to RecyclerView
 
-        // Fetch user data from Firebase
         fetchUserData();
     }
 
@@ -57,14 +52,16 @@ public class OwnerDashboardActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 userList.clear();
+
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     LabourDetails user = dataSnapshot.getValue(LabourDetails.class);
                     if (user != null) {
                         userList.add(user);
                     }
                 }
-                filteredList.clear();
-                filteredList.addAll(userList); // Initially, show all data
+
+
+                // Notify the adapter that data has changed
                 userAdapter.notifyDataSetChanged();
             }
 
@@ -77,60 +74,21 @@ public class OwnerDashboardActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu (excluding search functionality)
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menuowner, menu);
-
-        MenuItem searchItem = menu.findItem(R.id.search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
-
-        if (searchView != null) {
-            searchView.setQueryHint("Search Labour...");
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    filterData(query);
-                    return true;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    filterData(newText);
-                    return true;
-                }
-            });
-        }
-
         return true;
-    }
-
-    private void filterData(String query) {
-        filteredList.clear(); // Clear the filtered list before adding new filtered results
-
-        if (query.isEmpty()) {
-            filteredList.addAll(userList); // If query is empty, show all users
-        } else {
-            String lowerCaseQuery = query.toLowerCase();
-            for (LabourDetails user : userList) {
-                // Check if the user details (full name or profession) match the query
-                if (user.getFullName() != null && user.getProfession() != null) {
-                    if (user.getFullName().toLowerCase().contains(lowerCaseQuery) ||
-                            user.getProfession().toLowerCase().contains(lowerCaseQuery)) {
-                        filteredList.add(user); // Add matching user to filtered list
-                    }
-                }
-            }
-        }
-
-        userAdapter.notifyDataSetChanged(); // Notify the adapter to refresh the RecyclerView
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // Handle logout action
         if (item.getItemId() == R.id.ownermenu) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("isOwnerLoggedIn", false);
             editor.apply();
 
+            // Navigate back to the login activity
             Intent intent = new Intent(this, OwnerLoginActivity.class);
             startActivity(intent);
             finish();
@@ -138,3 +96,4 @@ public class OwnerDashboardActivity extends AppCompatActivity {
         return true;
     }
 }
+

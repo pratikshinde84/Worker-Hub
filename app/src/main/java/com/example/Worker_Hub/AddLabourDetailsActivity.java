@@ -2,17 +2,14 @@ package com.example.Worker_Hub;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -59,6 +56,23 @@ public class AddLabourDetailsActivity extends AppCompatActivity {
             Toast.makeText(this, "User not logged in. Please log in to continue.", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        // Add DatePickerDialog for etDob
+        etDob.setOnClickListener(view -> {
+            final Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    AddLabourDetailsActivity.this,
+                    (view1, selectedYear, selectedMonth, selectedDay) -> {
+                        String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
+                        etDob.setText(selectedDate);
+                    },
+                    year, month, day);
+            datePickerDialog.show();
+        });
 
         btnStatus.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(AddLabourDetailsActivity.this);
@@ -116,5 +130,63 @@ public class AddLabourDetailsActivity extends AppCompatActivity {
                 Toast.makeText(AddLabourDetailsActivity.this, "Error loading details", Toast.LENGTH_SHORT).show();
             }
         });
+
+        btnRegister.setOnClickListener(view -> {
+            String fullName = etFullName.getText().toString().trim();
+            String mobileNumber = etMobileNumber.getText().toString().trim();
+            String address = etAddress.getText().toString().trim();
+            String hourlyWageStr = etHourlyWage.getText().toString().trim();
+            String dob = etDob.getText().toString().trim();
+            String profession = etProfession.getText().toString().trim();
+            String aboutInfo = etAboutInfo.getText().toString().trim();
+
+            int selectedGenderId = radioGroupGender.getCheckedRadioButtonId();
+            String gender;
+            if (selectedGenderId == R.id.rbMale) {
+                gender = "Male";
+            } else if (selectedGenderId == R.id.rbFemale) {
+                gender = "Female";
+            } else {
+                gender = "Other";
+            }
+
+            if (fullName.isEmpty() || mobileNumber.isEmpty() || address.isEmpty() || hourlyWageStr.isEmpty() || dob.isEmpty() || profession.isEmpty()) {
+                Toast.makeText(AddLabourDetailsActivity.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            LabourDetails labourDetails = new LabourDetails(username,fullName, mobileNumber, address, hourlyWageStr, dob, profession, aboutInfo, gender);
+
+            databaseReference.child(username).setValue(labourDetails).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Toast.makeText(AddLabourDetailsActivity.this, "Details saved successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(AddLabourDetailsActivity.this, "Failed to save details", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menulabour, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.labourmenu) {
+            SharedPreferences sharedPreferences = getSharedPreferences("WorkerHubPrefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear();
+            editor.apply();
+
+            Intent intent = new Intent(this, LabourLoginActivity.class);
+            startActivity(intent);
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

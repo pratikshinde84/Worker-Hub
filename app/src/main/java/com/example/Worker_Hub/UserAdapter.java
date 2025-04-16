@@ -28,6 +28,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public UserAdapter(Context context, List<LabourDetails> userList) {
         this.context = context;
         this.userList = userList;
+
     }
 
     @NonNull
@@ -52,7 +53,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
         String username = user.getId();
 
-        // Retrieve 'isAvailable' value from the database based on username
+        if (username == null || username.isEmpty()) {
+            holder.tv_available.setText("Unavailable");
+            holder.tv_available.setTextColor(Color.RED); // Default color for missing data
+            return;
+        }
+
         DatabaseReference databaseReference = FirebaseDatabase.getInstance()
                 .getReference("LabourDetails")
                 .child(username);
@@ -60,25 +66,20 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         databaseReference.child("isAvailable").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // Check if the value exists and set the availability
                 if (dataSnapshot.exists()) {
                     Boolean isAvailable = dataSnapshot.getValue(Boolean.class);
-                    if (isAvailable != null) {
-                        // Set the 'isAvailable' text and color accordingly
-                        if (isAvailable) {
-                            holder.tv_available.setText("Available");
-                            holder.tv_available.setTextColor(Color.GREEN); // Green color for available
-                        } else {
-                            holder.tv_available.setText("Not Available");
-                            holder.tv_available.setTextColor(Color.RED); // Red color for not available
-                        }
+                    if (isAvailable != null && isAvailable) {
+                        holder.tv_available.setText("Available");
+                        holder.tv_available.setTextColor(Color.GREEN);
+                    } else {
+                        holder.tv_available.setText("Not Available");
+                        holder.tv_available.setTextColor(Color.RED);
                     }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle database error
                 Toast.makeText(context, "Failed to fetch availability status: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
